@@ -1,9 +1,17 @@
-package dan.tp2021.productos.domain;
+package utn.gallino.msstock.Dominio;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "STK_UNIDAD", schema = "MS-STK")
 public class Unidad {
-
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
+	@Column
 	private String descripcion;
+
+
 	public Integer getId() {
 		return id;
 	}

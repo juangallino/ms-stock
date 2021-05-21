@@ -1,13 +1,30 @@
-package dan.tp2021.productos.domain;
+package utn.gallino.msstock.Dominio;
 
+
+import javax.persistence.*;
+
+
+@Entity
+@Table(name = "STK_MATERIAL", schema = "MS-STK")
 public class Material {
-
+	@Id
+	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	private Integer id;
+	@Column
 	private String nombre;
+	@Column
 	private String descripcion;
+	@Column
 	private Double precio;
+	@Column
 	private Integer stockActual;
+	@Column
 	private Integer stockMinimo;
+
+
+	@ManyToOne
+	@JoinColumn(name = "ID_UNIDAD")
+	private Unidad unidad;
 	
 	public Integer getId() {
 		return id;

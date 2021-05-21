@@ -1,15 +1,31 @@
-package dan.tp2021.productos.domain;
+package utn.gallino.msstock.Dominio;
 
+import javax.persistence.*;
+import javax.print.attribute.standard.MediaSize;
 import java.time.Instant;
 
+@Entity
+@Table(name = "STK_MOVIMIENTO_STOCK", schema = "MS-STK")
 public class MovimientosStock {
-	
+
+	@Id
+	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	private Integer id;
+
+	@OneToOne
+	@JoinColumn(name = "ID_DETALLE_PEDIDO")
 	private DetallePedido detallePedido;
+	@OneToOne
+	@JoinColumn(name = "ID_DETALLE_PROVISION")
 	private DetalleProvision detalleProvision;
+	@ManyToOne
+	@JoinColumn(name = "ID_MATERIAL")
 	private Material material;
+	@Column
 	private Integer cantidadEntrada;
+	@Column
 	private Integer cantidadSalida;
+	@Column(columnDefinition = "TIMESTAMP")
 	private Instant fecha;
 	
 	public Integer getId() {

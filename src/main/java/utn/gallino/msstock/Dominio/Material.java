@@ -20,8 +20,6 @@ public class Material {
 	private Integer stockActual;
 	@Column
 	private Integer stockMinimo;
-
-
 	@ManyToOne
 	@JoinColumn(name = "ID_UNIDAD")
 	private Unidad unidad;
@@ -62,5 +60,12 @@ public class Material {
 	public void setStockMinimo(Integer stockMinimo) {
 		this.stockMinimo = stockMinimo;
 	}
-	
+
+	public Unidad getUnidad() {
+		return unidad;
+	}
+
+	public void setUnidad(Unidad unidad) {
+		this.unidad = unidad;
+	}
 }

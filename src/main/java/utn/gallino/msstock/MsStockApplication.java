@@ -7,7 +7,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class MsStockApplication {
 
 	public static void main(String[] args) {
+
 		SpringApplication.run(MsStockApplication.class, args);
+		System.out.println("BUILD --SUCCESS");
+
 	}
 
 }

@@ -15,7 +15,7 @@ public class Provision {
 	@Column(columnDefinition = "TIME")
 	private Instant fechaProvision;
 
-	@OneToMany(mappedBy = "provision")
+	@OneToMany(mappedBy = "provision",cascade = CascadeType.ALL)
 	private List<DetalleProvision> detalle;
 	
 	public Integer getId() {

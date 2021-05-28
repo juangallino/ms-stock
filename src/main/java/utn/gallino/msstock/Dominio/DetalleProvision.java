@@ -17,7 +17,7 @@ public class DetalleProvision {
 	@Column
 	private Integer cantidad;
 
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "ID_PROVISION")
 	private Provision provision;
 

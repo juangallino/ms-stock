@@ -20,7 +20,8 @@ public class Material {
 	private Integer stockActual;
 	@Column
 	private Integer stockMinimo;
-	@ManyToOne
+
+	@ManyToOne(cascade = {CascadeType.ALL})
 	@JoinColumn(name = "ID_UNIDAD")
 	private Unidad unidad;
 	

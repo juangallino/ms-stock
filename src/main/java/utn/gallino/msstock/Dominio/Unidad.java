@@ -6,7 +6,7 @@ import javax.persistence.*;
 @Table(name = "STK_UNIDAD", schema = "MS-STK")
 public class Unidad {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	//@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	@Column
 	private String descripcion;

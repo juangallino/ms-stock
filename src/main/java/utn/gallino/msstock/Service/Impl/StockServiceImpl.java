@@ -6,6 +6,7 @@ import utn.gallino.msstock.Dominio.DetallePedido;
 import utn.gallino.msstock.Dominio.Material;
 import utn.gallino.msstock.Dominio.MovimientosStock;
 import utn.gallino.msstock.Repository.DetallePedidoRepository;
+import utn.gallino.msstock.Repository.MaterialRepository;
 import utn.gallino.msstock.Repository.StockRepository;
 import utn.gallino.msstock.Service.StockService;
 
@@ -23,25 +24,39 @@ public class StockServiceImpl implements StockService {
     @Autowired
     DetallePedidoRepository detallePedidoRepository;
 
+    @Autowired
+    MaterialRepository materialRepository;
+
     @Override
     public Boolean crearMovimientoStockDetPed(Integer id_dp)  {
 
         //El movimiento de stock puede ser tanto por un PEDIDO,detalle_pedido(flujo salida)
         // o por una Provision,Detalle_provision(flujo entrante)
-
-        DetallePedido dpAux =  detallePedidoRepository.findById(id_dp).get();
+        System.out.println("crear movimiento stock con id_dp: "+ id_dp );
+         DetallePedido dpAux =  detallePedidoRepository.findById(id_dp).get();
          MovimientosStock movStock = new MovimientosStock();
          movStock.setDetallePedido(dpAux);
          movStock.setCantidadSalida(dpAux.getCantidad());
          movStock.setMaterial(dpAux.getMaterial());
          movStock.setFecha(Instant.now());
 
+         actualizarStockMaterial(dpAux.getMaterial(),dpAux.getCantidad());
         try {
             guardarMovimientosStock(movStock);
         }catch (Exception e){
             System.out.println("no se puedo guardar el mov stock de"+ movStock.getDetallePedido().toString());
-        return false;}
+            e.printStackTrace();
+                return false;
+        }
         return true;
+    }
+
+    private void actualizarStockMaterial(Material material, Integer cantidad) {
+        material.setStockActual(9999);
+        materialRepository.save(material);
+
+
+
     }
 
     @Override

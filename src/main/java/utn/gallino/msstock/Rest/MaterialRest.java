@@ -57,7 +57,7 @@ public class MaterialRest {
             return ResponseEntity.ok(aux);
         }
 
-    @GetMapping(path = "/{id}")
+    @GetMapping(path = "/stock_disponible/{id}")
     @ApiOperation(value = "Busca el stock disponible de un material")
     public ResponseEntity <Integer> stockMaterial(@PathVariable Integer id){
          Integer aux =materialService.buscarMaterial(id).getStockActual();

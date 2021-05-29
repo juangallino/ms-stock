@@ -27,7 +27,7 @@ public class MaterialServiceImpl implements MaterialService {
 
     @Override
     public void actualizarMaterial(Material mat, Integer id) {
-
+         mat.setId(id);
         materialRepository.save(mat);
 
     }

@@ -17,4 +17,5 @@ public interface MaterialRepository extends JpaRepository<Material, Integer> {
     public List<Material> findByStockActualBetween(Integer minimo, Integer maximo);
      public Material findByNombreIsLike(String nombre);
 
+
 }

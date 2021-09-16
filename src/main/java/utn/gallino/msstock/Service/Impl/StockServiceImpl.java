@@ -1,6 +1,10 @@
 package utn.gallino.msstock.Service.Impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.jms.JmsException;
+import org.springframework.jms.annotation.JmsListener;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 import utn.gallino.msstock.Dominio.DetallePedido;
 import utn.gallino.msstock.Dominio.Material;
@@ -10,8 +14,10 @@ import utn.gallino.msstock.Repository.MaterialRepository;
 import utn.gallino.msstock.Repository.StockRepository;
 import utn.gallino.msstock.Service.StockService;
 
+import javax.jms.Message;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -25,7 +31,31 @@ public class StockServiceImpl implements StockService {
     DetallePedidoRepository detallePedidoRepository;
 
     @Autowired
+    JmsTemplate jms;
+
+    @Autowired
     MaterialRepository materialRepository;
+
+
+
+    @JmsListener(destination = "COLA_PEDIDOS")
+    public void handle(Message msg) throws JmsException {
+
+         
+        System.out.println("msg: "+msg);
+        System.out.println("msg to string: "+msg.toString());
+        List<String> listaId_Dp = Arrays.asList(msg.toString().split(",",-1));
+
+        try {
+            Boolean respuesta=  listaId_Dp.stream().allMatch(dp -> crearMovimientoStockDetPed(Integer.parseInt(dp)));
+            System.out.println("Respuesta de allMatch: "+respuesta);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
 
     @Override
     public Boolean crearMovimientoStockDetPed(Integer id_dp)  {
@@ -39,8 +69,8 @@ public class StockServiceImpl implements StockService {
          movStock.setCantidadSalida(dpAux.getCantidad());
          movStock.setMaterial(dpAux.getMaterial());
          movStock.setFecha(Instant.now());
-
-         actualizarStockMaterial(dpAux.getMaterial(),dpAux.getCantidad());
+                                             //llamo al metodo con -(MENOS) cantidad pra que reste
+         actualizarStockMaterial(dpAux.getMaterial().getId(),-dpAux.getCantidad());
         try {
             guardarMovimientosStock(movStock);
         }catch (Exception e){
@@ -51,9 +81,10 @@ public class StockServiceImpl implements StockService {
         return true;
     }
 
-    private void actualizarStockMaterial(Material material, Integer cantidad) {
-        material.setStockActual(9999);
-        materialRepository.save(material);
+    private void actualizarStockMaterial(Integer id_material, Integer cantidad) {
+       Material matAux = materialRepository.findById(id_material).get();
+       matAux.setStockActual( matAux.getStockActual()+cantidad);
+       materialRepository.save(matAux);
 
 
 

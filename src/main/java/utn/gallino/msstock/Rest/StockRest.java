@@ -103,7 +103,7 @@ public class StockRest {
     @PostMapping(path = "/pedido/actualizarStockPorPedido/")
     @ApiOperation(value = "Servicio actualizacion de stock al crear un pedido")
     public ResponseEntity<HttpStatus> actualizarStockPedido(@RequestParam(value="listaId_dp") List<Integer> listaId_dp) {
-        System.out.println("Lista de obras : "+listaId_dp.toString());
+        System.out.println("Lista de id detallePedido : "+listaId_dp.toString());
 
 
         try {

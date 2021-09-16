@@ -41,7 +41,7 @@ public class StockServiceImpl implements StockService {
     @JmsListener(destination = "COLA_PEDIDOS")
     public void handle(Message msg) throws JmsException {
 
-         
+
         System.out.println("msg: "+msg);
         System.out.println("msg to string: "+msg.toString());
         List<String> listaId_Dp = Arrays.asList(msg.toString().split(",",-1));
@@ -63,7 +63,8 @@ public class StockServiceImpl implements StockService {
         //El movimiento de stock puede ser tanto por un PEDIDO,detalle_pedido(flujo salida)
         // o por una Provision,Detalle_provision(flujo entrante)
         System.out.println("crear movimiento stock con id_dp: "+ id_dp );
-         DetallePedido dpAux =  detallePedidoRepository.findById(id_dp).get();
+
+        DetallePedido dpAux =  detallePedidoRepository.findById(id_dp).get();
          MovimientosStock movStock = new MovimientosStock();
          movStock.setDetallePedido(dpAux);
          movStock.setCantidadSalida(dpAux.getCantidad());

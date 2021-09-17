@@ -1,5 +1,7 @@
 package utn.gallino.msstock.Service.Impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jms.JmsException;
@@ -14,7 +16,9 @@ import utn.gallino.msstock.Repository.MaterialRepository;
 import utn.gallino.msstock.Repository.StockRepository;
 import utn.gallino.msstock.Service.StockService;
 
+import javax.jms.JMSException;
 import javax.jms.Message;
+import javax.jms.TextMessage;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,15 +40,18 @@ public class StockServiceImpl implements StockService {
     @Autowired
     MaterialRepository materialRepository;
 
-
+    private static final Logger logger = LoggerFactory.getLogger(StockServiceImpl.class);
 
     @JmsListener(destination = "COLA_PEDIDOS")
-    public void handle(Message msg) throws JmsException {
-
-
-        System.out.println("msg: "+msg);
-        System.out.println("msg to string: "+msg.toString());
-        List<String> listaId_Dp = Arrays.asList(msg.toString().split(",",-1));
+    public void handle(Message msg) throws JmsException, InterruptedException, JMSException {
+        String chain= "";
+        Thread.sleep(20000);
+        if(msg instanceof TextMessage){
+            TextMessage ms = (TextMessage) msg;
+          chain =  ms.getText();
+        }
+        logger.info("Llego mensaje 1 {}", chain);
+        List<String> listaId_Dp = Arrays.asList(chain.split(",",-1));
 
         try {
             Boolean respuesta=  listaId_Dp.stream().allMatch(dp -> crearMovimientoStockDetPed(Integer.parseInt(dp)));
@@ -84,6 +91,9 @@ public class StockServiceImpl implements StockService {
 
     private void actualizarStockMaterial(Integer id_material, Integer cantidad) {
        Material matAux = materialRepository.findById(id_material).get();
+        if(matAux.getStockActual()<matAux.getStockMinimo()){
+            //todo lanzar pedido de provision
+        }
        matAux.setStockActual( matAux.getStockActual()+cantidad);
        materialRepository.save(matAux);
 

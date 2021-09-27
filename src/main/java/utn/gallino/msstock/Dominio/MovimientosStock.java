@@ -18,16 +18,22 @@ public class MovimientosStock {
 	@OneToOne
 	@JoinColumn(name = "ID_DETALLE_PEDIDO")
 	private DetallePedido detallePedido;
-	@OneToOne
+
+
+	@OneToOne(optional = true, cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "ID_DETALLE_PROVISION")
 	private DetalleProvision detalleProvision;
+
 	@ManyToOne
 	@JoinColumn(name = "ID_MATERIAL")
 	private Material material;
+
 	@Column
 	private Integer cantidadEntrada;
+
 	@Column
 	private Integer cantidadSalida;
+
 	@Column(columnDefinition = "TIMESTAMP")
 	private Instant fecha;
 

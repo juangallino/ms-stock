@@ -1,5 +1,6 @@
 package utn.gallino.msstock.Service;
 
+import utn.gallino.msstock.Dominio.Material;
 import utn.gallino.msstock.Dominio.MovimientosStock;
 
 import java.util.List;
@@ -7,7 +8,7 @@ import java.util.List;
 public interface StockService {
 
 
-    public MovimientosStock crearMovimientoStock(MovimientosStock  nuevo);
+    public MovimientosStock crearMovimientoStockProvision(Material Material);
 
     public MovimientosStock buscarMov(Integer id);
 

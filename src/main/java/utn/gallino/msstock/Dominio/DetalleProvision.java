@@ -40,7 +40,10 @@ public class DetalleProvision {
 	public void setMaterial(Material material) {
 		this.material = material;
 	}
-	
-	
-	
+	public Provision getProvision() {
+		return provision;
+	}
+	public void setProvision(Provision provision) {
+		this.provision = provision;
+	}
 }

@@ -8,21 +8,24 @@ import org.springframework.jms.JmsException;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
-import utn.gallino.msstock.Dominio.DetallePedido;
-import utn.gallino.msstock.Dominio.Material;
-import utn.gallino.msstock.Dominio.MovimientosStock;
+import utn.gallino.msstock.Dominio.*;
 import utn.gallino.msstock.Repository.DetallePedidoRepository;
 import utn.gallino.msstock.Repository.MaterialRepository;
 import utn.gallino.msstock.Repository.StockRepository;
+import utn.gallino.msstock.Service.ProvisionService;
 import utn.gallino.msstock.Service.StockService;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.TextMessage;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Service
 public class StockServiceImpl implements StockService {
@@ -40,12 +43,17 @@ public class StockServiceImpl implements StockService {
     @Autowired
     MaterialRepository materialRepository;
 
+    @Autowired
+    ProvisionService provisionService;
+
+
     private static final Logger logger = LoggerFactory.getLogger(StockServiceImpl.class);
 
     @JmsListener(destination = "COLA_PEDIDOS")
     public void handle(Message msg) throws JmsException, InterruptedException, JMSException {
         String chain= "";
-        Thread.sleep(20000);
+        System.out.println("Llego msj, hacemos sleep");
+        Thread.sleep(8000);
         if(msg instanceof TextMessage){
             TextMessage ms = (TextMessage) msg;
           chain =  ms.getText();
@@ -55,13 +63,12 @@ public class StockServiceImpl implements StockService {
 
         try {
             Boolean respuesta=  listaId_Dp.stream().allMatch(dp -> crearMovimientoStockDetPed(Integer.parseInt(dp)));
+
             System.out.println("Respuesta de allMatch: "+respuesta);
         }catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-
 
 
     @Override
@@ -77,8 +84,8 @@ public class StockServiceImpl implements StockService {
          movStock.setCantidadSalida(dpAux.getCantidad());
          movStock.setMaterial(dpAux.getMaterial());
          movStock.setFecha(Instant.now());
-                                             //llamo al metodo con -(MENOS) cantidad pra que reste
-         actualizarStockMaterial(dpAux.getMaterial().getId(),-dpAux.getCantidad());
+
+         actualizarStockMaterial(dpAux.getMaterial().getId(),dpAux.getCantidad());
         try {
             guardarMovimientosStock(movStock);
         }catch (Exception e){
@@ -91,19 +98,58 @@ public class StockServiceImpl implements StockService {
 
     private void actualizarStockMaterial(Integer id_material, Integer cantidad) {
        Material matAux = materialRepository.findById(id_material).get();
-        if(matAux.getStockActual()<matAux.getStockMinimo()){
-            //todo lanzar pedido de provision
+       Boolean stockMinimoSuperado =matAux.getStockActual()-cantidad<matAux.getStockMinimo();
+        if(stockMinimoSuperado){
+            crearMovimientoStockProvision(matAux);
         }
-       matAux.setStockActual( matAux.getStockActual()+cantidad);
+       matAux.setStockActual( matAux.getStockActual()-cantidad);
        materialRepository.save(matAux);
 
 
 
     }
+    private void actualizarStockProvision(Integer id_material, Integer cantidad) {
+        Material matAux = materialRepository.findById(id_material).get();
+        matAux.setStockActual( matAux.getStockActual()+cantidad);
+        materialRepository.save(matAux);
+    }
 
     @Override
-    public MovimientosStock crearMovimientoStock(MovimientosStock nuevo) {
-        return null;
+    public MovimientosStock crearMovimientoStockProvision(Material material) {
+
+        Provision provision = new Provision();
+       /* provision.setFechaProvision(Instant.now());
+        DetalleProvision detalleProvision = new DetalleProvision();
+
+        detalleProvision.setMaterial(material);
+        detalleProvision.setCantidad((int) (material.getStockMinimo()*1.8)); //Se llama a una reposisicon por el dobl del stock minimo
+        detalleProvision.setProvision(provision);
+        List<DetalleProvision> aux = new ArrayList<>();
+        aux.add(detalleProvision);
+        provision.setDetalle(aux);*/
+        try {
+          provision =  provisionService.crearProvision(material);
+        }catch (Exception e){
+            logger.trace("Se rompio la provision jeeeeeee"+e.getMessage());
+        }
+
+        MovimientosStock movimientosStock = new MovimientosStock();
+        movimientosStock.setFecha(Instant.now().plusSeconds(120));//  .plus(5, ChronoUnit.DAYS));
+        movimientosStock.setCantidadEntrada(provision.getDetalle().get(0).getCantidad());
+        movimientosStock.setDetalleProvision(provision.getDetalle().get(0));
+        movimientosStock.setMaterial(material);
+
+        try {
+            guardarMovimientosStock(movimientosStock);
+            actualizarStockProvision(material.getId(),movimientosStock.getCantidadEntrada());
+        }catch (Exception e){
+            System.out.println("no se puedo guardar el mov stock de"+ movimientosStock.getDetalleProvision().toString());
+            e.printStackTrace();
+
+        }
+
+        return movimientosStock;
+
     }
 
     @Override

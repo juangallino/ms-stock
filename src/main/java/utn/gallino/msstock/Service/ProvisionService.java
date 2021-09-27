@@ -1,5 +1,6 @@
 package utn.gallino.msstock.Service;
 
+import utn.gallino.msstock.Dominio.Material;
 import utn.gallino.msstock.Dominio.MovimientosStock;
 import utn.gallino.msstock.Dominio.Provision;
 
@@ -15,4 +16,7 @@ public interface ProvisionService {
     Provision actualizarProvision(Provision provNueva, Integer id) throws Exception;
 
     void bajaProvision(Integer id) throws Exception;
+
+    public Provision crearProvision(Material material) throws Exception;
+
 }

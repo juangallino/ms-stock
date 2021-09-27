@@ -30,7 +30,7 @@ public class StockRest {
     @ApiOperation(value = "Crear un Movimiento de stock ")
     public ResponseEntity<String> crear(@RequestBody MovimientosStock nuevo)  {
         try{
-            stockService.crearMovimientoStock(nuevo);                                                                                   // si quiero retorna la entidad al crearla ResponseEntity.ok(nuevo);
+           // stockService.crearMovimientoStock(nuevo);                                                                                   // si quiero retorna la entidad al crearla ResponseEntity.ok(nuevo);
             return ResponseEntity.status(HttpStatus.CREATED).body("OK");
         }catch (Exception e){return ResponseEntity.status(HttpStatus.CONFLICT).build();}
     }

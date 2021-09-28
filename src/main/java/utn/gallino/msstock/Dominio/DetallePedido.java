@@ -1,8 +1,18 @@
-package dan.tp2021.productos.domain;
+package utn.gallino.msstock.Dominio;
 
+import javax.persistence.*;
+import java.util.jar.Attributes;
+
+@Entity
+@Table(name = "PED_DETALLE_PEDIDO", schema = "MS-PED")
 public class DetallePedido {
+	@Id
 	private Integer id;
+
+	@ManyToOne
+	@JoinColumn(name = "ID_MATERIAL")
 	private Material material;
+	@Column
 	private Integer cantidad;
 
 	public Integer getId() {

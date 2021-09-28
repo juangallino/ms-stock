@@ -1,12 +1,21 @@
-package dan.tp2021.productos.domain;
+package utn.gallino.msstock.Dominio;
 
+import javax.persistence.*;
 import java.time.Instant;
 import java.util.List;
 
+@Entity
+@Table(name="STK_PROVISION", schema = "MS-STK")
 public class Provision {
 
+	@Id
+	@GeneratedValue(strategy= GenerationType.IDENTITY)
 	private Integer id;
+
+	@Column(columnDefinition = "TIME")
 	private Instant fechaProvision;
+
+	@OneToMany(mappedBy = "provision",cascade = CascadeType.ALL)
 	private List<DetalleProvision> detalle;
 	
 	public Integer getId() {

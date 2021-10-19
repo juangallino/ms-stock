@@ -25,7 +25,7 @@ public class StockRest {
     StockService stockService;
 
 
-
+    @CrossOrigin(maxAge = 86400)
     @PostMapping
     @ApiOperation(value = "Crear un Movimiento de stock ")
     public ResponseEntity<String> crear(@RequestBody MovimientosStock nuevo)  {
@@ -36,7 +36,7 @@ public class StockRest {
     }
 
 
-
+    @CrossOrigin(maxAge = 86400)
     @GetMapping(path = "/{id}")
     @ApiOperation(value = "Busca un Movimiento por id")
     public ResponseEntity<MovimientosStock> movStockPorId(@PathVariable Integer id){
@@ -50,6 +50,7 @@ public class StockRest {
 
     }
 
+    @CrossOrigin(maxAge = 86400)
     @GetMapping(path = "/")
     @ApiOperation(value = "Busca todos los movimientos de stock")
     public ResponseEntity<List<MovimientosStock>> listarMovStock(){
@@ -62,7 +63,7 @@ public class StockRest {
 
 
 
-
+    @CrossOrigin(maxAge = 86400)
     @PutMapping(path = "/{id}")
     @ApiOperation(value = "Actualiza un Movimiento de stock")
     @ApiResponses(value = {
@@ -81,7 +82,7 @@ public class StockRest {
     }
 
 
-
+    @CrossOrigin(maxAge = 86400)
     @DeleteMapping(path = "/{id}")
     @ApiOperation(value = "Elimina un Movimiento x id")
     public ResponseEntity<String> borrar(@PathVariable Integer id)  {
@@ -100,6 +101,7 @@ public class StockRest {
 
     //***********************************************************************************************************************
 
+    @CrossOrigin(maxAge = 86400)
     @PostMapping(path = "/pedido/actualizarStockPorPedido/")
     @ApiOperation(value = "Servicio actualizacion de stock al crear un pedido")
     public ResponseEntity<HttpStatus> actualizarStockPedido(@RequestParam(value="listaId_dp") List<Integer> listaId_dp) {

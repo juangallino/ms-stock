@@ -25,7 +25,7 @@ public class ProvisionRest {
 
 @Autowired
 ProvisionService provisionService;
-
+    @CrossOrigin(maxAge = 86400)
     @PostMapping
     @ApiOperation(value = "Crear una Provision")
     public ResponseEntity<String> crear(@RequestBody Provision p)  {
@@ -36,7 +36,7 @@ ProvisionService provisionService;
     }
 
 
-
+    @CrossOrigin(maxAge = 86400)
     @GetMapping(path = "/{id}")
     @ApiOperation(value = "Busca una Provision por id")
     public ResponseEntity<Provision> provisionPorId(@PathVariable Integer id){
@@ -50,6 +50,8 @@ ProvisionService provisionService;
 
     }
 
+
+    @CrossOrigin(maxAge = 86400)
     @GetMapping(path = "/")
     @ApiOperation(value = "Busca todos las Provisiones")
     public ResponseEntity<List<Provision>> listarProvisiones(){
@@ -62,7 +64,7 @@ ProvisionService provisionService;
 
 
 
-
+    @CrossOrigin(maxAge = 86400)
     @PutMapping(path = "/{id}")
     @ApiOperation(value = "Actualiza una Provision")
     @ApiResponses(value = {
@@ -81,7 +83,7 @@ ProvisionService provisionService;
     }
 
 
-
+    @CrossOrigin(maxAge = 86400)
     @DeleteMapping(path = "/{id}")
     @ApiOperation(value = "Elimina una Provision x id")
     public ResponseEntity<String> borrar(@PathVariable Integer id)  {

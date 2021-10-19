@@ -28,7 +28,7 @@ public class MaterialRest {
         MaterialService materialService;
 
 
-
+    @CrossOrigin(maxAge = 86400)
         @PostMapping
         @ApiOperation(value = "Crear un material ")
         public ResponseEntity<String> crear(@RequestBody Material nuevo)  {
@@ -39,7 +39,7 @@ public class MaterialRest {
         }
 
 
-
+    @CrossOrigin(maxAge = 86400)
         @GetMapping(path = "/{id}")
         @ApiOperation(value = "Busca un material por id")
         public ResponseEntity<Material> materialPorId(@PathVariable Integer id){
@@ -49,14 +49,14 @@ public class MaterialRest {
             return ResponseEntity.ok(mt);
         }
 
-
+    @CrossOrigin(maxAge = 86400)
         @GetMapping(path = "/precio/{precio}")
         @ApiOperation(value = "Busca materiales precio")
         public ResponseEntity <List<Material>> materialPorPrecio(@PathVariable Double precio){
             List<Material> aux=  materialService.buscarMaterialPorPrecio(precio);
             return ResponseEntity.ok(aux);
         }
-
+    @CrossOrigin(maxAge = 86400)
     @GetMapping(path = "/stock_disponible/{id}")
     @ApiOperation(value = "Busca el stock disponible de un material")
     public ResponseEntity <Integer> stockMaterial(@PathVariable Integer id){
@@ -66,7 +66,7 @@ public class MaterialRest {
 
 
 
-
+    @CrossOrigin(maxAge = 86400)
         @GetMapping(path = "/{StockMin}/{StockMax}")
         @ApiOperation(value = "Busca materiales por rango de stock")
         public ResponseEntity <List<Material>> materialPorStockEntre(@PathVariable Integer StockMin,@PathVariable Integer StockMax){
@@ -74,7 +74,7 @@ public class MaterialRest {
             return ResponseEntity.ok(aux);
         }
 
-
+    @CrossOrigin(maxAge = 86400)
         @GetMapping(path = "qry")
         @ApiOperation(value = "Busca un Material por nombre utilizano qry")
         public ResponseEntity<Material> materialPorNombre(@RequestParam(required = false, value = "name") String name){
@@ -86,14 +86,14 @@ public class MaterialRest {
         }
 
 
-
+    @CrossOrigin(maxAge = 86400)
         @GetMapping
         @ApiOperation(value = "Busca todos los Materiales")
         public ResponseEntity<List<Material>> todos(){
 
             return ResponseEntity.ok(materialService.listarMateriales());
         }
-
+    @CrossOrigin(maxAge = 86400)
         @PutMapping(path = "/{id}")
         @ApiOperation(value = "Actualiza un Material")
         @ApiResponses(value = {
@@ -111,7 +111,7 @@ public class MaterialRest {
             }
         }
 
-
+    @CrossOrigin(maxAge = 86400)
     @DeleteMapping(path = "/{id}")
     @ApiOperation(value = "Elimina un Material x id")
     public ResponseEntity<String> borrar(@PathVariable Integer id)  {

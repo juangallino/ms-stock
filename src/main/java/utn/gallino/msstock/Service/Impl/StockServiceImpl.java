@@ -99,11 +99,18 @@ public class StockServiceImpl implements StockService {
     private void actualizarStockMaterial(Integer id_material, Integer cantidad) {
        Material matAux = materialRepository.findById(id_material).get();
        Boolean stockMinimoSuperado =matAux.getStockActual()-cantidad<matAux.getStockMinimo();
+        matAux.setStockActual( matAux.getStockActual()-cantidad);
+        materialRepository.save(matAux);
+
         if(stockMinimoSuperado){
+            try {
+                logger.info("HAY QUE CREAR PROVISION. sleep para ver cant material x debajo del minimo");
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             crearMovimientoStockProvision(matAux);
         }
-       matAux.setStockActual( matAux.getStockActual()-cantidad);
-       materialRepository.save(matAux);
 
 
 
